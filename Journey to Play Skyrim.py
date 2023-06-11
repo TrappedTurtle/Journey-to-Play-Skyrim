@@ -1,197 +1,162 @@
-import time
+import curses
+import random
 
-def play_game():
-    print("It is November 11th, 2011. You wake up in your bed craving to play Skyrim.")
-    print("You have one of the most important pitch meetings in your life in the morning pitching the idea for Bassman 4: The Gaping.")
-    print("What do you do?")
-    print("1. Wake up and play Skyrim.")
-    print("2. Go back to sleep and wake up well-rested for work.")
+def main(stdscr):
+    # Set up the screen
+    curses.curs_set(0)
+    stdscr.nodelay(1)
+    stdscr.timeout(100)
+    stdscr.clear()
+    height, width = stdscr.getmaxyx()
+    center_y = height // 2
+    center_x = width // 2
+    output_win = curses.newwin(center_y - 1, width, 0, 0)
+    input_win = curses.newwin(1, width, center_y, 0)
+    input_win.keypad(1)
 
-    choice = input("Enter your choice (1 or 2): ")
+    # Call the existing code inside the main loop
+    wake_up_play_skyrim(output_win, input_win)
 
-    if choice == "1":
-        play_skyrim()
-    elif choice == "2":
-        go_to_sleep()
+    # Clean up the windows and end the game
+    curses.curs_set(1)
+    input_win.keypad(0)
+    curses.echo()
+    curses.endwin()
+
+def wake_up_play_skyrim(output_win, input_win):
+    output_win.addstr("It is November 11th, 2011. You wake up in your bed, craving to play Skyrim.\n")
+    output_win.addstr("You have one of the most important pitch meetings in your life in the morning, pitching the idea for Bassman 4: The Gaping.\n")
+    output_win.addstr("Do you answer your Skyrim Calling or do you rest your brain for the big day ahead?\n")
+    output_win.addstr("1. Wake up and play Skyrim.\n")
+    output_win.addstr("2. Go back to sleep and wake up well-rested for work.\n")
+    output_win.refresh()
+
+    choice = input_win.getstr().decode()
+
+    if choice.lower() == "skyrim":
+        play_skyrim(output_win, input_win)
+
+    elif choice.lower() == "sleep":
+        go_back_to_sleep(output_win, input_win)
+
     else:
-        print("Invalid choice. Please try again.")
-        play_game()
+        output_win.addstr("Invalid choice. Please try again.\n")
+        wake_up_play_skyrim(output_win, input_win)
 
-def go_to_sleep():
-    print("You decide to go back to sleep.")
-    print("Before that, you have a couple of options.")
-    print("1. Drink some choccy milk before sleeping.")
-    print("2. Go to sleep without any assistance.")
-    print("3. Take sleep medication (RX Fake Brand Name).")
+def play_skyrim(output_win, input_win):
+    output_win.addstr("You decide to wake up and play Skyrim.\n")
+    output_win.addstr("You go down the stairs of your mansion, grab a cup of soda from the Mt. Dew dispenser, and walk past your elegant kitchen.\n")
+    output_win.addstr("Suddenly, you hear a robber in your house. He is facing away from you.\n")
+    output_win.addstr("What do you do?\n")
+    output_win.addstr("1. Run away to your man cave and lock yourself behind the 5-inch thick VAULT door.\n")
+    output_win.addstr("2. Bum rush the robber.\n")
+    output_win.refresh()
 
-    choice = input("Enter your choice (1, 2, or 3): ")
+    choice = input_win.getstr().decode()
 
-    if choice == "1":
-        print("Your stomach rumbles.")
-        choccy_milk()
-    elif choice == "2":
-        wake_up_hostage()
-    elif choice == "3":
-        sleep_medication()
+    if choice.lower() == "run":
+        output_win.addstr("You run to your man cave and lock yourself behind the vault door.\n")
+        output_win.addstr("The robber rummages upstairs while you call the police.\n")
+        output_win.addstr("You turn on your PC and start a new playthrough of Skyrim.\n")
+        output_win.addstr("Suddenly, your phone rings. It's the 911 dispatch lady.\n")
+        output_win.addstr("'The intruder has injured officers and taken them hostage. Do not make noise and stay where you are until everything is clear,' she says.\n")
+        output_win.addstr("You continue playing Skyrim, waiting for the situation to resolve.\n")
+        output_win.refresh()
+
+    elif choice.lower() == "bum rush":
+        output_win.addstr("You bum rush the robber. Your flat feet slap on the ground like a duck trying to mate as you get closer.\n")
+        output_win.addstr("The intruder turns around and discharges his weapon, hitting you square in the face.\n")
+        output_win.refresh()
+        russell_crowe_sequence(output_win, input_win)
+
     else:
-        print("Invalid choice. Please try again.")
-        go_to_sleep()
+        output_win.addstr("Invalid choice. Please try again.\n")
+        play_skyrim(output_win, input_win)
 
-def choccy_milk():
-    print("You drink some choccy milk before sleeping.")
-    print("Your stomach rumbles with the milky goodness.")
-    print("You fall asleep and dream of epic adventures.")
-    print("You wake up in the middle of the night.")
-    print("You have two choices:")
-    print("1. Go back to sleep.")
-    print("2. Play Skyrim.")
+def go_back_to_sleep(output_win, input_win):
+    output_win.addstr("You decide to go back to sleep and wake up well-rested for work.\n")
+    output_win.addstr("As you drift off to sleep, you wake up in the middle of the night.\n")
+    output_win.addstr("You have two choices.\n")
+    output_win.addstr("1. Wake up and play Skyrim.\n")
+    output_win.addstr("2. Go back to sleep.\n")
+    output_win.refresh()
 
-    choice = input("Enter your choice (1 or 2): ")
+    choice = input_win.getstr().decode()
 
-    if choice == "1":
-        wake_up_hostage()
-    elif choice == "2":
-        play_skyrim()
+    if choice.lower() == "skyrim":
+        play_skyrim(output_win, input_win)
+
+    elif choice.lower() == "sleep":
+        wake_up_with_gun_in_mouth(output_win, input_win)
+
     else:
-        print("Invalid choice. Please try again.")
-        choccy_milk()
+        output_win.addstr("Invalid choice. Please try again.\n")
+        go_back_to_sleep(output_win, input_win)
 
-def sleep_medication():
-    print("You take the sleep medication (RX Fake Brand Name).")
-    print("You fall asleep peacefully.")
-    print("When you wake up, you find yourself in your neighbor's house, covered in blood with a knife in your hand.")
-    print("Written in blood on the wall is 'OJ WAS RIGHT.'")
-    print("Game over.")
-    play_game()
+def wake_up_with_gun_in_mouth(output_win, input_win):
+    output_win.addstr("You wake up with a gun being pressed into your mouth.\n")
+    output_win.addstr("The robber talks to you in a heavy Boston accent, 'You got anything valuable in this domicile?'\n")
+    output_win.addstr("He moves the gun just enough for you to mutter.\n")
+    output_win.addstr("What do you say?\n")
+    output_win.addstr("1. Gaming PC\n")
+    output_win.addstr("2. Xbox 360\n")
+    output_win.addstr("3. Mother's pearls\n")
+    output_win.addstr("4. 'Kill yourself'\n")
+    output_win.addstr("5. Passion of the Christ directed by Mel Gibson on Blu-ray\n")
+    output_win.refresh()
 
-def play_skyrim():
-    print("You go downstairs to play Skyrim.")
-    print("You grab a cup of soda from the Mt.Dew Dispenser.")
-    print("As you walk past your elegant kitchen, you hear a robber.")
+    choice = input_win.getstr().decode()
 
-    choice = input("What do you do? (1 or 2): ")
+    if choice.lower() == "gaming pc":
+        output_win.addstr("You tell the robber about your gaming PC.\n")
+        output_win.addstr("He asks you to take him to the room that has it.\n")
+        output_win.refresh()
+        russell_crowe_sequence(output_win, input_win)
 
-    if choice == "1":
-        print("You bum rush the robber.")
-        print("The robber turns around and shoots you in the face. You die.")
-        russell_crowe_sequence()
-        play_game()
-    elif choice == "2":
-        print("You run to your man cave and lock yourself behind a 5-inch thick VAULT door.")
-        print("The robber rummages upstairs.")
-        call_police()
+    elif choice.lower() == "xbox 360":
+        output_win.addstr("You tell the robber about your Xbox 360.\n")
+        output_win.addstr("'Hell no, that thing is gonna be showing me red rings before I even get to sell it off to some poor bastard,' he says.\n")
+        output_win.addstr("He asks what else you have.\n")
+        output_win.addstr("1. Mother's pearls\n")
+        output_win.addstr("2. 'Kill yourself'\n")
+        output_win.refresh()
+        russell_crowe_sequence(output_win, input_win)
+
+    elif choice.lower() == "pearls":
+        output_win.addstr("You tell the robber about your mother's pearls.\n")
+        output_win.addstr("'I didn't know you was Batman,' he exclaims.\n")
+        output_win.addstr("He asks what else you have.\n")
+        output_win.addstr("1. Gaming PC\n")
+        output_win.addstr("2. 'Kill yourself'\n")
+        output_win.refresh()
+        russell_crowe_sequence(output_win, input_win)
+
+    elif choice.lower() == "kill":
+        russell_crowe_sequence(output_win, input_win)
+
+    elif choice.lower() == "passion":
+        output_win.addstr("You tell the robber about Passion of the Christ directed by Mel Gibson on Blu-ray.\n")
+        output_win.addstr("'That guy hates a certain race that I like... I don't consume his art,' he says.\n")
+        output_win.addstr("He asks what else you have.\n")
+        output_win.addstr("1. Gaming PC\n")
+        output_win.addstr("2. 'Kill yourself'\n")
+        output_win.refresh()
+        russell_crowe_sequence(output_win, input_win)
+
     else:
-        print("Invalid choice. Please try again.")
-        play_skyrim()
+        output_win.addstr("Invalid choice. Please try again.\n")
+        wake_up_with_gun_in_mouth(output_win, input_win)
 
-def wake_up_hostage():
-    print("You wake up in the middle of the night.")
-    print("A masked man is standing over you, pressing a gun into your mouth.")
-    print("The robber talks to you in a heavy Boston accent, 'You got anything valuable in this domicile?'")
+def russell_crowe_sequence(output_win, input_win):
+    output_win.addstr("The world around you begins to distort and fade away.\n")
+    output_win.addstr("You find yourself standing in a beautiful field, surrounded by golden wheat.\n")
+    output_win.addstr("In the distance, you spot Russell Crowe dressed like a gladiator, staring at you longingly.\n")
+    output_win.addstr("As you approach him, he and all the emperors of Rome embrace you, praising your work as an alpha male, an example of stoicism, and a martyr to be remembered for generations.\n")
+    output_win.addstr("But suddenly, the field transforms into a nightmarish scene of fire and brimstone.\n")
+    output_win.addstr("You realize that your choices have led you to Hell.\n")
+    output_win.addstr("Game over.\n")
+    output_win.refresh()
+    wake_up_play_skyrim(output_win, input_win)
 
-    choice = input("What do you say? (1, 2, 3, or 4): ")
-
-    if choice == "1":
-        print("The robber asks you to take him to the room with the gaming PC.")
-        call_police()
-    elif choice == "2":
-        print("The robber says, 'Hell no, that thing is gonna be showing me red rings before I even get to sell it off to some poor bastard.'")
-        print("The robber asks, 'What else do you have?'")
-        choice = input("What do you say? (1 or 4): ")
-        if choice == "1":
-            print("The robber asks you to take him to the room with the gaming PC.")
-            call_police()
-        elif choice == "4":
-            print("The robber says, 'That guy hates a certain race that I like... I don't consume his art.'")
-            print("The robber asks, 'What else do you have?'")
-            choice = input("What do you say? (1 or 5): ")
-            if choice == "1":
-                print("The robber asks you to take him to the room with the gaming PC.")
-                call_police()
-            elif choice == "5":
-                russell_crowe_sequence()
-                play_game()
-            else:
-                print("Invalid choice. Please try again.")
-                wake_up_hostage()
-        else:
-            print("Invalid choice. Please try again.")
-            wake_up_hostage()
-    elif choice == "3":
-        print("The robber says, 'I didn't know you was Batman.'")
-        print("The robber asks, 'What else do you have?'")
-        choice = input("What do you say? (1 or 4): ")
-        if choice == "1":
-            print("The robber asks you to take him to the room with the gaming PC.")
-            call_police()
-        elif choice == "4":
-            print("The robber says, 'That guy hates a certain race that I like... I don't consume his art.'")
-            print("The robber asks, 'What else do you have?'")
-            choice = input("What do you say? (1 or 5): ")
-            if choice == "1":
-                print("The robber asks you to take him to the room with the gaming PC.")
-                call_police()
-            elif choice == "5":
-                russell_crowe_sequence()
-                play_game()
-            else:
-                print("Invalid choice. Please try again.")
-                wake_up_hostage()
-        else:
-            print("Invalid choice. Please try again.")
-            wake_up_hostage()
-    elif choice == "4":
-        russell_crowe_sequence()
-        play_game()
-    else:
-        print("Invalid choice. Please try again.")
-        wake_up_hostage()
-
-def russell_crowe_sequence():
-    print("As you utter the words, 'Attempt Die,' everything fades away.")
-    print("You have a sudden vision.")
-    print("Russell Crowe appears before you in a field, dressed as Maximus from Gladiator.")
-    print("He looks at you with intense eyes and says, 'Your decisions have led you to this place.'")
-    print("You find yourself in a dark, fiery landscape.")
-    print("Tormented souls surround you, and you can feel the heat of the flames.")
-    print("You realize that you are in hell, a consequence of your actions.")
-    print("The vision fades, and you find yourself back in the waking world.")
-    print("Game over.")
-    play_game()
-
-def call_police():
-    print("You discreetly call the police and inform them about the robbery in progress.")
-    print("You provide them with your address and details about the situation.")
-    print("They assure you that help is on the way and advise you to stay hidden until the police arrive.")
-    print("While waiting, you hear the sound of the robber rummaging upstairs.")
-    print("You decide to turn on your PC and start a new playthrough of Skyrim to distract yourself.")
-    print("As the game loads, you hear the police enter your house.")
-    print("There are screams and gunshots ringing out.")
-    print("Your character in Skyrim is about to approach the chopping block.")
-    print("Suddenly, your phone rings. It's the 911 dispatch lady.")
-    print("'The intruder has injured officers and taken them hostage. Do not make noise and stay where you are until everything is clear.'")
-    print("What do you do?")
-    print("1. Stay hidden and wait for the situation to resolve.")
-    print("2. Attempt to escape through the back door.")
-    choice = input("Enter your choice (1 or 2): ")
-
-    if choice == "1":
-        print("You follow the dispatcher's instructions and stay hidden, hoping for a safe resolution.")
-        print("After a tense wait, you hear the sound of sirens and the police storming your house.")
-        print("The robber is apprehended, and the officers are freed.")
-        print("Although the situation was terrifying, you are relieved that everyone is safe.")
-        print("Congratulations! You survived the robbery.")
-        play_game()
-    elif choice == "2":
-        print("You make a daring escape through the back door, fleeing from your own home.")
-        print("While you manage to get away, you live with the constant fear and paranoia of being pursued.")
-        print("Your life takes a dark turn as you become a fugitive, constantly on the run.")
-        print("The story ends here, with your future uncertain and your freedom compromised.")
-        print("Game over.")
-        play_game()
-    else:
-        print("Invalid choice. Please try again.")
-        call_police()
-
-play_game()
-
+# Call the main function to start the game
+curses.wrapper(main)
